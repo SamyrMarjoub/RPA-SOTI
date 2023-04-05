@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "basic-ftp": "^5.0.2",
     "dotenv": "^16.0.3",
+    "node-cron": "^3.0.2",
     "nodemon": "^2.0.22",
     "puppeteer": "^19.8.3",
     "puppeteer-utilz": "^4.0.8"
