@@ -12,7 +12,8 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "nodemon": "^2.0.22",
-    "puppeteer": "^19.8.3"
+    "puppeteer": "^19.8.3",
+    "puppeteer-utilz": "^4.0.8"
   },
   "type": "module"
 }

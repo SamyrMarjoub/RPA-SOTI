@@ -1,24 +1,16 @@
 import puppeteer from "puppeteer";
 
-
-
 function start() {
     (async () => {
-        const browser = await puppeteer.launch({ headless: false },);
+        const browser = await puppeteer.launch({ headless: false });
         const page = await browser.newPage();
         const dataAtual = new Date();
         const dataAtual2 = new Date();
-
-
-        // Defina o dia como 1
+       
         dataAtual2.setDate(1);
-
-        // Obtenha o dia, mês e ano da data atual
         const diaF = dataAtual2.getDate().toString().padStart(2, '0');
-        const mesF = (dataAtual2.getMonth() + 1).toString().padStart(2, '0'); // Note que os meses começam em zero
+        const mesF = (dataAtual2.getMonth() + 1).toString().padStart(2, '0'); 
         const anoF = dataAtual2.getFullYear();
-
-        // Crie a string formatada com o primeiro dia do mês atual
         const primeiroDiaDoMes = `${diaF}/${mesF}/${anoF}`;
         const dia = dataAtual.getDate().toString().padStart(2, '0');
         const mes = (dataAtual.getMonth() + 1).toString().padStart(2, '0');
@@ -36,8 +28,9 @@ function start() {
         await page.click("[type='submit']")
         await page.waitForNavigation()
         await page.goto("http://192.168.7.226:8080/SOTI/consultabilhetagemlazy.xhtml")
-        await page.type("#dtIni_input", "01/03/2023")
-        await page.type("#dtFim_input", "01/04/2023")
+        await page.type("#dtIni_input", primeiroDiaDoMes)
+        await page.type("#dtFim_input", dataFormatada)
+        await page.type("#txtHoraInicial", "0000")
         await page.type("#txtHoraFinal", "0000")
         const gravarBtnref = "#btnGravar"
         await page.waitForSelector(gravarBtnref)
@@ -58,10 +51,9 @@ function start() {
                     await page.click(ref)
                     console.log("Baixado")
                     setTimeout(async () => {
-                    
-                        await browser.close();
 
-                    }, 2000)
+                        await browser.close()
+                    }, 10000);
 
                 }, 1000)
                 clearInterval(intervalo)
@@ -74,6 +66,6 @@ function start() {
 
 start()
 
-// setInterval(() => {
-//     start()
-// }, 86400000)
+setInterval(() => {
+    start()
+}, 86400000 - 1)
