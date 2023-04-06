@@ -1,9 +1,6 @@
 import puppeteer from "puppeteer";
 import ftp from 'basic-ftp'
-// const cron = require('node-cron');
 import cron from 'node-cron'
-// const fs = require('fs');
-// const path = require('path');
 import fs from 'fs'
 import path from 'path'
 
@@ -57,27 +54,45 @@ function start() {
                     // await page.waitForSelector(ref)
                     await page.click(ref)
                     console.log("Baixado")
-                    const client = new ftp.Client();
-                    client.ftp.verbose = true;
-                    try {
-                        await client.access({
-                            host: "57400550edb3.sn.mynetname.net/",
-                            user: "soti",
-                            password: "MZO&xU543wt#",
-                            secure: true
-                        });
-                        const downloadDir = path.join(process.env.HOME, 'Downloads');
-                        const files = fs.readdirSync(downloadDir);
-                        const firstFile = files.find(file => fs.statSync(path.join(downloadDir, file)).isFile());
 
-                        // fazer upload do arquivo encontrado
-                        await client.uploadFrom(path.join(downloadDir, firstFile), `/${firstFile}`);
-
-                    } catch (err) {
-                        console.log(err);
-                    }
-                    client.close();
                     setTimeout(async () => {
+
+                        const client = new ftp.Client();
+                        client.ftp.verbose = true;
+
+                        try {
+                            await client.access({
+                                host: "57400550edb3.sn.mynetname.net",
+                                user: "soti",
+                                password: "MZO&xU543wt#",
+                                secure: true,
+                                secureOptions: {
+                                    rejectUnauthorized: false
+                                },
+                                connTimeout: 60000 // aumentar o tempo limite de conexão,
+                            });
+
+                            const downloadDir = path.join(process.env.HOME, 'Downloads');
+                            const files = fs.readdirSync(downloadDir);
+                            const firstFile = files.find(file => fs.statSync(path.join(downloadDir, file)).isFile());
+                            const newFileName = `${mes}${ano}.csv`;
+                            fs.renameSync(path.join(downloadDir, firstFile), path.join(downloadDir, newFileName));
+
+                            // esperar um pouco para garantir que o arquivo foi baixado completamente
+                            await new Promise(resolve => setTimeout(resolve, 10000));
+
+                            // fazer upload do arquivo encontrado
+                            await client.uploadFrom(path.join(downloadDir, newFileName), `/${newFileName}`);
+                            console.log("Arquivo enviado com sucesso");
+                            client.close();
+
+                        } catch (err) {
+                            console.log(err);
+                        }
+
+
+
+
                         await browser.close()
                     }, 10000);
 
@@ -92,10 +107,7 @@ function start() {
 
 start()
 
-cron.schedule("0 7,11,17 * * *", ()=>{
+cron.schedule("0 7 * * *", () => {
     start()
 })
 
-// setInterval(() => {
-//     start()
-// }, 86400000 - 1)
