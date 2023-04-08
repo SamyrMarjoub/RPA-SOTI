@@ -23,17 +23,17 @@ function start() {
         const ano = dataAtual.getFullYear();
         const dataFormatada = `${dia}/${mes}/${ano}`;
 
-        await page.goto('http://192.168.7.226:8080/SOTI/');
+        await page.goto(process.env.BASE_URL);
 
         // Set screen size
         await page.setViewport({ width: 1080, height: 1024 });
 
         // Type into search box
-        await page.type("[type='text']", 'rpa');
-        await page.type("[type='password']", "oL1iEGu@hX4h0zv5Ly@q")
+        await page.type("[type='text']", process.env.RPA_LOGIN);
+        await page.type("[type='password']", process.env.RPA_PASSWORD)
         await page.click("[type='submit']")
         await page.waitForNavigation()
-        await page.goto("http://192.168.7.226:8080/SOTI/consultabilhetagemlazy.xhtml")
+        await page.goto(process.env.URL_TWO)
         await page.type("#dtIni_input", primeiroDiaDoMes)
         await page.type("#dtFim_input", dataFormatada)
         await page.type("#txtHoraInicial", "0000")
@@ -64,9 +64,9 @@ function start() {
 
                         try {
                             await client.access({
-                                host: "57400550edb3.sn.mynetname.net",
-                                user: "soti",
-                                password: "MZO&xU543wt#",
+                                host: process.env.HOST,
+                                user: process.env.USER,
+                                password: process.env.PASS,
                                 secure: true,
                                 secureOptions: {
                                     rejectUnauthorized: false
