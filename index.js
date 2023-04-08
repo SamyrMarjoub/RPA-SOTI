@@ -3,6 +3,8 @@ import ftp from 'basic-ftp'
 import cron from 'node-cron'
 import fs from 'fs'
 import path from 'path'
+import * as dotenv from 'dotenv' 
+dotenv.config()
 
 function start() {
     (async () => {
